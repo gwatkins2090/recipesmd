@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Zap, Github, Twitter, Linkedin } from 'lucide-react';
 
-export const Footer = () => {
+ const Footer = () => {
   return (
     <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container py-12">
@@ -13,9 +13,6 @@ export const Footer = () => {
               </div>
               <span className="font-bold">Environment Sync Station</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
-              Eliminate "works on my machine" problems forever with one-click environment synchronization.
-            </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-foreground">
                 <Github className="h-5 w-5" />
@@ -67,3 +64,6 @@ export const Footer = () => {
     </footer>
   );
 };
+
+
+export default Footer;

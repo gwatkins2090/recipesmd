@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev:turbo": "next dev --turbopack",
-    "dev": "next dev",
     "install deps": "pnpm install",
+    "dev": "next dev",
     "start": "next start",
     "build": "next build",
     "type-check": "tsc --noEmit --skipLibCheck --noErrorTruncation",
@@ -16,7 +16,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "prepare": "husky",
     "clean": "rm -rf .next out dist coverage",
     "rm -rf nm": "rm -rf pnpm-lock.json node_modules",
     "deploy": "npx vercel",
