@@ -42,6 +42,14 @@ const config: Config = {
       padding: '2rem',
     },
     extend: {
+      fontFamily: {
+        'inter': ['Inter', 'sans-serif'],
+        'open-sans': ['Open Sans', 'sans-serif'],
+        'dancing-script': ['Dancing Script', 'cursive'],
+        'sans': ['Open Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'heading': ['Inter', 'sans-serif'],
+        'accent': ['Dancing Script', 'cursive'],
+      },
       flex: {
         full: '0 0 100%',
       },
@@ -66,6 +74,15 @@ const config: Config = {
         '15': '15',
       },
       colors: {
+        // Savor Brand Colors
+        savor: {
+          saffron: '#F4A261',
+          sage: '#2A9D8F',
+          cream: '#FFFEF7',
+          paprika: '#E76F51',
+          charcoal: '#264653',
+          mint: '#A8DADC',
+        },
         x: {
           primary: '#1DA1F2',
           dark: '#14171A',

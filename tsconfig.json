@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node"],
+    "types": ["node", "jest", "@testing-library/jest-dom"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -44,5 +44,5 @@
     "eslint.config.mjs",
     "next.config.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/__tests__/**/*"]
 }
