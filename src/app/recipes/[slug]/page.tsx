@@ -15,9 +15,9 @@ import { RecipePageWrapper } from '@/components/recipe/recipe-page-wrapper';
 import { kebabToTitle } from '@/lib/utils';
 
 interface RecipePageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {

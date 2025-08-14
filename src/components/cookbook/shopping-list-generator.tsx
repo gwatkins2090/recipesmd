@@ -59,7 +59,7 @@ export function ShoppingListGenerator({ favorites, userRecipes }: ShoppingListGe
     selectedRecipes.forEach((recipeId) => {
       const recipe = availableRecipes.find((r) => r.slug === recipeId || r.id === recipeId);
       if (recipe) {
-        recipe.ingredients.forEach((ingredient, index) => {
+        recipe.ingredients.forEach((ingredient: any, index: number) => {
           items.push({
             id: `${recipeId}-${index}`,
             amount: ingredient.amount,

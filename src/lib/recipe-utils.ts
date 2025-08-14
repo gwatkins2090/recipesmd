@@ -233,8 +233,8 @@ export function userRecipeToRecipe(userRecipe: any): Recipe {
     instructions: userRecipe.instructions || [],
     notes: userRecipe.notes ? [userRecipe.notes] : [],
     variations: [],
-    storage: [],
-    nutrition: null
+    storage: undefined,
+    nutrition: undefined
   };
 }
 

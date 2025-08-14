@@ -149,7 +149,7 @@ export function PrintableRecipes({ favorites, userRecipes }: PrintableRecipesPro
             <ul class="ingredients">
                 ${recipe.ingredients
                   .map(
-                    (ing) => `
+                    (ing: any) => `
                     <li>${ing.amount} ${ing.unit || ''} ${ing.ingredient}</li>
                 `
                   )
@@ -160,7 +160,7 @@ export function PrintableRecipes({ favorites, userRecipes }: PrintableRecipesPro
             <ol class="instructions">
                 ${recipe.instructions
                   .map(
-                    (inst, index) => `
+                    (inst: any, index: number) => `
                     <li>
                         <span class="step-number">${index + 1}</span>
                         ${inst.instruction}
@@ -175,7 +175,7 @@ export function PrintableRecipes({ favorites, userRecipes }: PrintableRecipesPro
                 ? `
                 <div class="tags">
                     <strong>Tags:</strong>
-                    ${(recipe.meta?.tags || recipe.tags || []).map((tag) => `<span class="tag">${tag}</span>`).join('')}
+                    ${(recipe.meta?.tags || recipe.tags || []).map((tag: string) => `<span class="tag">${tag}</span>`).join('')}
                 </div>
             `
                 : ''

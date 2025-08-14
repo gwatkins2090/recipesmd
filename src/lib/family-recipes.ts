@@ -7,7 +7,7 @@ const FAMILY_RECIPES_DIRECTORY = path.join(process.cwd(), 'recipes', 'family');
 interface ParsedFamilyRecipe {
   title: string;
   ingredients: Array<{ amount: string; unit: string; ingredient: string }>;
-  instructions: Array<{ instruction: string }>;
+  instructions: Array<{ step: number; instruction: string }>;
   notes: string[];
 }
 
@@ -19,7 +19,7 @@ function parseFamilyRecipe(content: string, filename: string): ParsedFamilyRecip
 
   let title = '';
   const ingredients: Array<{ amount: string; unit: string; ingredient: string }> = [];
-  const instructions: Array<{ instruction: string }> = [];
+  const instructions: Array<{ step: number; instruction: string }> = [];
   const notes: string[] = [];
 
   let currentSection = '';
@@ -64,7 +64,7 @@ function parseFamilyRecipe(content: string, filename: string): ParsedFamilyRecip
     // Handle numbered instructions
     else if (line.match(/^\d+\./) && currentSection === 'instructions') {
       const instruction = line.replace(/^\d+\.\s*/, '').trim();
-      instructions.push({ instruction });
+      instructions.push({ step: instructionCounter, instruction });
       instructionCounter++;
     }
     // Handle unnumbered instructions (single paragraph or multiple lines)
@@ -85,11 +85,13 @@ function parseFamilyRecipe(content: string, filename: string): ParsedFamilyRecip
             sentences.forEach((sentence, index) => {
               const trimmed = sentence.trim();
               if (trimmed) {
-                instructions.push({ instruction: trimmed + (index < sentences.length - 1 ? '.' : '') });
+                instructions.push({ step: instructionCounter, instruction: trimmed + (index < sentences.length - 1 ? '.' : '') });
+                instructionCounter++;
               }
             });
           } else {
-            instructions.push({ instruction: line });
+            instructions.push({ step: instructionCounter, instruction: line });
+            instructionCounter++;
           }
         }
       }
@@ -119,13 +121,15 @@ function parseFamilyRecipe(content: string, filename: string): ParsedFamilyRecip
   // If no instructions found but we have content after ingredients, try to extract it
   if (instructions.length === 0 && ingredients.length > 0) {
     let foundInstructions = false;
+    let stepCounter = 1;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (line.toLowerCase().includes('**instructions:**') ||
           (foundInstructions && line && !line.startsWith('**') && !line.startsWith('#'))) {
         foundInstructions = true;
         if (!line.toLowerCase().includes('**instructions:**') && line.trim()) {
-          instructions.push({ instruction: line.trim() });
+          instructions.push({ step: stepCounter, instruction: line.trim() });
+          stepCounter++;
         }
       }
     }
@@ -255,8 +259,8 @@ function familyRecipeToRecipe(parsed: ParsedFamilyRecipe, slug: string): Recipe 
     instructions: parsed.instructions,
     notes: parsed.notes,
     variations: [],
-    storage: [],
-    nutrition: null
+    storage: undefined,
+    nutrition: undefined
   };
 }
 
