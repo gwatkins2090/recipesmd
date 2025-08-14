@@ -40,6 +40,24 @@ const Header = () => {
             Categories
           </Link>
           <Link
+            href='/family-recipes'
+            className='text-sm font-medium transition-colors hover:text-savor-saffron'
+          >
+            Family Recipes
+          </Link>
+          <Link
+            href='/cookbook'
+            className='text-sm font-medium transition-colors hover:text-savor-saffron'
+          >
+            Cookbook
+          </Link>
+          <Link
+            href='/shopping-list'
+            className='text-sm font-medium transition-colors hover:text-savor-saffron'
+          >
+            Shopping List
+          </Link>
+          <Link
             href='/about'
             className='text-sm font-medium transition-colors hover:text-savor-saffron'
           >
@@ -86,6 +104,27 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Categories
+            </Link>
+            <Link
+              href='/family-recipes'
+              className='block text-sm font-medium transition-colors hover:text-savor-saffron'
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Family Recipes
+            </Link>
+            <Link
+              href='/cookbook'
+              className='block text-sm font-medium transition-colors hover:text-savor-saffron'
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Cookbook
+            </Link>
+            <Link
+              href='/shopping-list'
+              className='block text-sm font-medium transition-colors hover:text-savor-saffron'
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Shopping List
             </Link>
             <Link
               href='/about'

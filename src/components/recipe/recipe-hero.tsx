@@ -6,8 +6,20 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, Users, ChefHat, Star, Heart, Share2, Printer, ArrowLeft } from 'lucide-react';
+import {
+  Clock,
+  Users,
+  ChefHat,
+  Star,
+  Heart,
+  Share2,
+  Printer,
+  ArrowLeft,
+  BookOpen,
+  ShoppingCart,
+} from 'lucide-react';
 import { Recipe } from '@/types';
+import { addRecipeToShoppingList } from '@/lib/recipe-utils';
 import { cn } from '@/lib/utils';
 
 interface RecipeHeroProps {
@@ -48,7 +60,12 @@ export function RecipeHero({ recipe }: RecipeHeroProps) {
   };
 
   const handlePrint = () => {
-    window.print();
+    // Redirect to cookbook print section
+    window.location.href = '/cookbook?tab=print';
+  };
+
+  const handleAddToShoppingList = () => {
+    addRecipeToShoppingList(recipe);
   };
 
   return (
@@ -114,6 +131,15 @@ export function RecipeHero({ recipe }: RecipeHeroProps) {
                 onClick={handlePrint}
               >
                 <Printer className='h-4 w-4' />
+              </Button>
+              <Button
+                variant='secondary'
+                size='sm'
+                className='h-10 w-10 rounded-full bg-white/90 p-0 backdrop-blur-sm'
+                onClick={handleAddToShoppingList}
+                title='Add to Shopping List'
+              >
+                <ShoppingCart className='h-4 w-4' />
               </Button>
             </div>
           </div>
@@ -223,6 +249,31 @@ export function RecipeHero({ recipe }: RecipeHeroProps) {
                 </div>
               </div>
             )}
+
+            {/* Cookbook Actions */}
+            <div className='border-t pt-6'>
+              <p className='mb-3 text-sm font-medium text-savor-charcoal'>Add to Cookbook:</p>
+              <div className='flex flex-wrap gap-3'>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={() => (window.location.href = '/cookbook?tab=favorites')}
+                  className='flex items-center gap-2'
+                >
+                  <BookOpen className='h-4 w-4' />
+                  View in Cookbook
+                </Button>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={handleAddToShoppingList}
+                  className='flex items-center gap-2'
+                >
+                  <ShoppingCart className='h-4 w-4' />
+                  Add to Shopping List
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

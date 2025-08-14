@@ -205,3 +205,172 @@ export function validateRecipe(recipe: Partial<Recipe>): string[] {
 
   return errors;
 }
+
+/**
+ * Convert user recipe to Recipe format
+ */
+export function userRecipeToRecipe(userRecipe: any): Recipe {
+  return {
+    slug: userRecipe.slug || `recipe-${userRecipe.id}`,
+    meta: {
+      title: userRecipe.title,
+      description: userRecipe.description || 'A delicious homemade recipe',
+      category: userRecipe.category,
+      difficulty: userRecipe.difficulty,
+      servings: userRecipe.servings || 4,
+      times: {
+        prep: userRecipe.prepTime || '15 min',
+        cook: userRecipe.cookTime || '30 min',
+        total: `${parseInt(userRecipe.prepTime?.replace(/\D/g, '') || '15') + parseInt(userRecipe.cookTime?.replace(/\D/g, '') || '30')} min`
+      },
+      tags: userRecipe.tags || [],
+      image: userRecipe.image || '/images/recipes/placeholder.svg',
+      imageAlt: `${userRecipe.title} recipe image`,
+      rating: 0,
+      reviewCount: 0
+    },
+    ingredients: userRecipe.ingredients || [],
+    instructions: userRecipe.instructions || [],
+    notes: userRecipe.notes ? [userRecipe.notes] : [],
+    variations: [],
+    storage: [],
+    nutrition: null
+  };
+}
+
+/**
+ * Get user recipes from localStorage
+ */
+export function getUserRecipes(): any[] {
+  if (typeof window === 'undefined') return [];
+
+  const savedUserRecipes = localStorage.getItem('savor-user-recipes');
+  return savedUserRecipes ? JSON.parse(savedUserRecipes) : [];
+}
+
+/**
+ * Get a specific user recipe by slug
+ */
+export function getUserRecipeBySlug(slug: string): any | null {
+  const userRecipes = getUserRecipes();
+  return userRecipes.find(recipe =>
+    (recipe.slug === slug) || (`recipe-${recipe.id}` === slug)
+  ) || null;
+}
+
+// Note: Server-side functions for combining markdown and user recipes
+// are moved to a separate server-side utility file
+
+/**
+ * Create shopping list from recipe
+ */
+export function createShoppingListFromRecipe(recipe: Recipe): {
+  name: string;
+  items: Array<{
+    id: string;
+    name: string;
+    quantity: string;
+    unit: string;
+    category: string;
+    purchased: boolean;
+    recipeSource: string;
+  }>;
+} {
+  const listName = `${recipe.meta.title} - Shopping List`;
+
+  const items = recipe.ingredients.map((ingredient, index) => ({
+    id: `${Date.now()}-${index}`,
+    name: ingredient.ingredient,
+    quantity: ingredient.amount,
+    unit: ingredient.unit || '',
+    category: categorizeIngredient(ingredient.ingredient),
+    purchased: false,
+    recipeSource: recipe.meta.title
+  }));
+
+  return {
+    name: listName,
+    items
+  };
+}
+
+/**
+ * Simple ingredient categorization
+ */
+function categorizeIngredient(ingredient: string): string {
+  const lowerIngredient = ingredient.toLowerCase();
+
+  if (lowerIngredient.includes('chicken') || lowerIngredient.includes('beef') ||
+      lowerIngredient.includes('pork') || lowerIngredient.includes('fish') ||
+      lowerIngredient.includes('salmon') || lowerIngredient.includes('shrimp')) {
+    return 'Meat & Seafood';
+  }
+
+  if (lowerIngredient.includes('milk') || lowerIngredient.includes('cheese') ||
+      lowerIngredient.includes('butter') || lowerIngredient.includes('cream') ||
+      lowerIngredient.includes('yogurt') || lowerIngredient.includes('egg')) {
+    return 'Dairy & Eggs';
+  }
+
+  if (lowerIngredient.includes('apple') || lowerIngredient.includes('banana') ||
+      lowerIngredient.includes('tomato') || lowerIngredient.includes('onion') ||
+      lowerIngredient.includes('carrot') || lowerIngredient.includes('lettuce') ||
+      lowerIngredient.includes('potato') || lowerIngredient.includes('pepper')) {
+    return 'Produce';
+  }
+
+  if (lowerIngredient.includes('flour') || lowerIngredient.includes('sugar') ||
+      lowerIngredient.includes('salt') || lowerIngredient.includes('oil') ||
+      lowerIngredient.includes('pasta') || lowerIngredient.includes('rice') ||
+      lowerIngredient.includes('beans') || lowerIngredient.includes('spice')) {
+    return 'Pantry & Dry Goods';
+  }
+
+  if (lowerIngredient.includes('frozen') || lowerIngredient.includes('ice cream')) {
+    return 'Frozen';
+  }
+
+  if (lowerIngredient.includes('bread') || lowerIngredient.includes('bagel') ||
+      lowerIngredient.includes('muffin')) {
+    return 'Bakery';
+  }
+
+  if (lowerIngredient.includes('juice') || lowerIngredient.includes('soda') ||
+      lowerIngredient.includes('water') || lowerIngredient.includes('coffee') ||
+      lowerIngredient.includes('tea')) {
+    return 'Beverages';
+  }
+
+  return 'Other';
+}
+
+/**
+ * Add recipe to shopping list and redirect
+ */
+export function addRecipeToShoppingList(recipe: Recipe): void {
+  if (typeof window === 'undefined') return;
+
+  const shoppingListData = createShoppingListFromRecipe(recipe);
+
+  // Get existing shopping lists
+  const existingLists = JSON.parse(localStorage.getItem('savor-shopping-lists') || '[]');
+
+  // Create new shopping list
+  const newList = {
+    id: Date.now().toString(),
+    name: shoppingListData.name,
+    items: shoppingListData.items,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  // Add to existing lists
+  const updatedLists = [...existingLists, newList];
+  localStorage.setItem('savor-shopping-lists', JSON.stringify(updatedLists));
+
+  // Show success message (you could replace this with a toast notification)
+  alert(`Shopping list "${newList.name}" created successfully!`);
+
+  // Redirect to shopping list page
+  window.location.href = `/shopping-list?list=${newList.id}`;
+}
