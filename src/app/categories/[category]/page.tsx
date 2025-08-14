@@ -85,9 +85,9 @@ const categoryInfo = {
 };
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
