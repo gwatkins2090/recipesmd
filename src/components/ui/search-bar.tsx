@@ -17,13 +17,13 @@ interface SearchBarProps {
 }
 
 export function SearchBar({
-  placeholder = "Search recipes...",
-  value = "",
+  placeholder = 'Search recipes...',
+  value = '',
   onChange,
   onSearch,
   onClear,
   className,
-  size = 'md'
+  size = 'md',
 }: SearchBarProps) {
   const [internalValue, setInternalValue] = useState(value);
   const currentValue = value !== undefined ? value : internalValue;
@@ -37,14 +37,19 @@ export function SearchBar({
   };
 
   const handleSearch = () => {
-    onSearch?.(currentValue);
+    if (onSearch) {
+      onSearch(currentValue);
+    } else {
+      // Default behavior: navigate to search page
+      window.location.href = `/search?q=${encodeURIComponent(currentValue)}`;
+    }
   };
 
   const handleClear = () => {
     if (value === undefined) {
-      setInternalValue("");
+      setInternalValue('');
     }
-    onChange?.("");
+    onChange?.('');
     onClear?.();
   };
 
@@ -57,58 +62,56 @@ export function SearchBar({
   const sizeClasses = {
     sm: 'h-8',
     md: 'h-10',
-    lg: 'h-12'
+    lg: 'h-12',
   };
 
   return (
-    <div className={cn("relative flex items-center", className)}>
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+    <div className={cn('relative flex items-center', className)}>
+      <div className='relative flex-1'>
+        <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
         <Input
-          type="text"
+          type='text'
           placeholder={placeholder}
           value={currentValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           className={cn(
-            "pl-10 pr-10",
+            'pl-10 pr-10',
             sizeClasses[size],
-            "focus:ring-2 focus:ring-savor-saffron focus:border-savor-saffron"
+            'focus:border-savor-saffron focus:ring-2 focus:ring-savor-saffron'
           )}
         />
         {currentValue && (
           <Button
-            variant="ghost"
-            size="sm"
-            className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 p-0 hover:bg-transparent"
+            variant='ghost'
+            size='sm'
+            className='absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 p-0 hover:bg-transparent'
             onClick={handleClear}
           >
-            <X className="h-3 w-3" />
+            <X className='h-3 w-3' />
           </Button>
         )}
       </div>
-      
-      {onSearch && (
-        <Button
-          onClick={handleSearch}
-          className="ml-2 bg-savor-saffron hover:bg-savor-saffron/90 text-savor-charcoal"
-          size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
-        >
-          <Search className="h-4 w-4" />
-          <span className="sr-only">Search</span>
-        </Button>
-      )}
+
+      <Button
+        onClick={handleSearch}
+        className='ml-2 bg-savor-saffron text-savor-charcoal hover:bg-savor-saffron/90'
+        size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
+      >
+        <Search className='h-4 w-4' />
+        <span className='sr-only'>Search</span>
+      </Button>
     </div>
   );
 }
 
 // Compact search bar for headers/navigation
 export function CompactSearchBar({
-  placeholder = "Search...",
+  placeholder = 'Search...',
   value,
   onChange,
   onSearch,
-  className
+  className,
 }: Omit<SearchBarProps, 'size'>) {
   return (
     <SearchBar
@@ -116,19 +119,19 @@ export function CompactSearchBar({
       value={value}
       onChange={onChange}
       onSearch={onSearch}
-      size="sm"
-      className={cn("max-w-xs", className)}
+      size='sm'
+      className={cn('max-w-xs', className)}
     />
   );
 }
 
 // Hero search bar for landing pages
 export function HeroSearchBar({
-  placeholder = "What would you like to cook today?",
+  placeholder = 'What would you like to cook today?',
   value,
   onChange,
   onSearch,
-  className
+  className,
 }: Omit<SearchBarProps, 'size'>) {
   return (
     <SearchBar
@@ -136,8 +139,8 @@ export function HeroSearchBar({
       value={value}
       onChange={onChange}
       onSearch={onSearch}
-      size="lg"
-      className={cn("max-w-2xl", className)}
+      size='lg'
+      className={cn('max-w-2xl', className)}
     />
   );
 }

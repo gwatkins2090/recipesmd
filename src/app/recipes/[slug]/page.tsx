@@ -26,7 +26,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
-  const recipe = await getRecipeBySlug(params.slug);
+  const { slug } = await params;
+  const recipe = await getRecipeBySlug(slug);
 
   if (!recipe) {
     return {
@@ -53,7 +54,8 @@ export async function generateMetadata({ params }: RecipePageProps): Promise<Met
 }
 
 export default async function RecipePage({ params }: RecipePageProps) {
-  const recipe = await getRecipeBySlug(params.slug);
+  const { slug } = await params;
+  const recipe = await getRecipeBySlug(slug);
 
   if (!recipe) {
     notFound();
