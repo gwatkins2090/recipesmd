@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
@@ -18,10 +18,10 @@ const mockRecipes: Recipe[] = [
   // For now, we'll use empty array and show a message
 ];
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
-  
+
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [filters, setFilters] = useState<RecipeSearchFilters>({
@@ -30,7 +30,7 @@ export default function SearchPage() {
     maxTime: undefined,
     tags: [],
     cuisine: [],
-    category: undefined
+    category: undefined,
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,7 +43,7 @@ export default function SearchPage() {
         // const response = await fetch('/api/recipes');
         // const data = await response.json();
         // setRecipes(data);
-        
+
         // For now, use mock data
         setRecipes(mockRecipes);
       } catch (error) {
@@ -60,7 +60,7 @@ export default function SearchPage() {
   const filteredRecipes = useMemo(() => {
     const currentFilters = {
       ...filters,
-      query: searchQuery
+      query: searchQuery,
     };
     return filterRecipes(recipes, currentFilters);
   }, [recipes, searchQuery, filters]);
@@ -78,7 +78,7 @@ export default function SearchPage() {
   };
 
   const handleFiltersChange = (newFilters: Partial<RecipeSearchFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
+    setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
   const clearSearch = () => {
@@ -89,7 +89,7 @@ export default function SearchPage() {
       maxTime: undefined,
       tags: [],
       cuisine: [],
-      category: undefined
+      category: undefined,
     });
     // Clear URL params
     const url = new URL(window.location.href);
@@ -98,36 +98,37 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className='min-h-screen bg-background'>
       <Header />
       <main>
         {/* Search Hero */}
-        <section className="bg-gradient-to-br from-savor-cream via-savor-mint/20 to-savor-sage/10 py-12 lg:py-16">
-          <div className="container">
-            <div className="text-center">
-              <div className="mb-6 flex justify-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-savor-saffron to-savor-paprika shadow-lg">
-                  <Search className="h-6 w-6 text-white" />
+        <section className='bg-gradient-to-br from-savor-cream via-savor-mint/20 to-savor-sage/10 py-12 lg:py-16'>
+          <div className='container'>
+            <div className='text-center'>
+              <div className='mb-6 flex justify-center'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-savor-saffron to-savor-paprika shadow-lg'>
+                  <Search className='h-6 w-6 text-white' />
                 </div>
               </div>
-              
-              <h1 className="mb-4 font-heading text-3xl font-bold text-savor-charcoal sm:text-4xl">
+
+              <h1 className='mb-4 font-heading text-3xl font-bold text-savor-charcoal sm:text-4xl'>
                 Search Recipes
               </h1>
-              
-              <p className="mx-auto mb-8 max-w-2xl text-lg text-savor-charcoal/80">
-                Find the perfect recipe for any occasion. Search by ingredients, cuisine, or dish name.
+
+              <p className='mx-auto mb-8 max-w-2xl text-lg text-savor-charcoal/80'>
+                Find the perfect recipe for any occasion. Search by ingredients, cuisine, or dish
+                name.
               </p>
 
               {/* Search bar */}
-              <div className="mx-auto max-w-2xl">
+              <div className='mx-auto max-w-2xl'>
                 <SearchBar
-                  placeholder="Search recipes, ingredients, or cuisines..."
+                  placeholder='Search recipes, ingredients, or cuisines...'
                   value={searchQuery}
                   onChange={setSearchQuery}
                   onSearch={handleSearch}
                   onClear={clearSearch}
-                  size="lg"
+                  size='lg'
                 />
               </div>
             </div>
@@ -135,26 +136,26 @@ export default function SearchPage() {
         </section>
 
         {/* Search Results */}
-        <section className="py-8 lg:py-12">
-          <div className="container">
+        <section className='py-8 lg:py-12'>
+          <div className='container'>
             {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-savor-saffron mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading recipes...</p>
+              <div className='py-12 text-center'>
+                <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-savor-saffron'></div>
+                <p className='text-muted-foreground'>Loading recipes...</p>
               </div>
             ) : (
-              <div className="grid gap-8 lg:grid-cols-4">
+              <div className='grid gap-8 lg:grid-cols-4'>
                 {/* Filters Sidebar */}
-                <div className="lg:col-span-1">
-                  <SearchFilters 
+                <div className='lg:col-span-1'>
+                  <SearchFilters
                     recipes={recipes}
                     filters={filters}
                     onFiltersChange={handleFiltersChange}
                   />
                 </div>
-                
+
                 {/* Results */}
-                <div className="lg:col-span-3">
+                <div className='lg:col-span-3'>
                   <SearchResults
                     recipes={filteredRecipes}
                     searchQuery={searchQuery}
@@ -169,5 +170,23 @@ export default function SearchPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className='min-h-screen bg-background'>
+          <Header />
+          <main className='container py-8'>
+            <div className='text-center'>Loading search...</div>
+          </main>
+          <Footer />
+        </div>
+      }
+    >
+      <SearchPageContent />
+    </Suspense>
   );
 }
