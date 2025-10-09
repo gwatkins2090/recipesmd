@@ -1,23 +1,36 @@
-## Recipe #107: Karo Pecan Pie
+---
+title: "Karo Pecan Pie"
+slug: "karo-pecan-pie"
+category: "Main Dishes"
+difficulty: "Easy"
 
-### Preheat oven to 350 degrees
+description: "Maw Maw's signature pecan pie made with Karo syrup for that perfect glossy, sweet filling. The pecans toast beautifully in the oven, creating a crunchy top layer over the rich, gooey center."
+prepTime: "PT10M"
+cookTime: "PT45M"
+totalTime: "PT55M"
+yield: "6-8 servings"
 
-#### Ingredients:
-- 1 cup light karo corn syrup
-- 3 eggs
-- 1 cup sugar
-- 2 Tbsp butter melted
-- 1 tsp vanilla
-- 1½ cups (6 oz.) pecans
-- 1 unbaked 9-inch deep dish pie crust
+tags:
+  - main-dishes
+  - family-recipe
 
-#### Instructions:
-Stir the first five ingredients thoroughly using a spoon. Mix in pecans.
+author: "Maw Maw"
+source: "Recipe #107"
+cuisine: "American"
+generation: "grandma"
+dateAdded: "2025-10-08"
+image: "/images/recipes/placeholder.svg"
+imageAlt: "# Preheat oven to 350 degrees recipe"
+---
 
-Pour into pie crust.
+## Description
 
-Bake on center rack of oven for 60-70 minutes.
+Maw Maw's signature pecan pie made with Karo syrup for that perfect glossy, sweet filling. The pecans toast beautifully in the oven, creating a crunchy top layer over the rich, gooey center.
 
-Cool for 2 hours.
+## Ingredients
 
-Store in refrigerator.
+- (Ingredients to be added)
+
+## Instructions
+
+1. (Instructions to be added)

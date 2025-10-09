@@ -9,6 +9,54 @@ import { generateSlug } from './recipe-utils';
 const recipesDirectory = path.join(process.cwd(), 'recipes');
 
 /**
+ * Parse ISO 8601 duration to human-readable format
+ * PT10M -> 10 min, PT1H30M -> 1 hr 30 min
+ */
+function parseISODuration(duration: string | undefined): string {
+  if (!duration) return '0 min';
+
+  // If already in human format, return as-is
+  if (!duration.startsWith('PT')) return duration;
+
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+  if (!match) return duration;
+
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+
+  if (hours > 0 && minutes > 0) {
+    return `${hours} hr ${minutes} min`;
+  } else if (hours > 0) {
+    return `${hours} hr`;
+  } else {
+    return `${minutes} min`;
+  }
+}
+
+/**
+ * Parse yield/servings field
+ * "8 servings" -> 8, "6-8 servings" -> 7 (median)
+ */
+function parseYield(yieldStr: string | number | undefined): number {
+  if (typeof yieldStr === 'number') return yieldStr;
+  if (!yieldStr) return 4;
+
+  const str = String(yieldStr);
+
+  // Handle range (e.g., "6-8 servings")
+  const rangeMatch = str.match(/(\d+)-(\d+)/);
+  if (rangeMatch) {
+    const min = parseInt(rangeMatch[1]);
+    const max = parseInt(rangeMatch[2]);
+    return Math.round((min + max) / 2);
+  }
+
+  // Extract first number
+  const numMatch = str.match(/(\d+)/);
+  return numMatch ? parseInt(numMatch[1]) : 4;
+}
+
+/**
  * Parse frontmatter data into RecipeMeta
  */
 function parseFrontmatter(data: any): RecipeMeta {
@@ -19,16 +67,16 @@ function parseFrontmatter(data: any): RecipeMeta {
     subcategory: data.subcategory,
     cuisine: data.cuisine,
     difficulty: data.difficulty || 'Medium',
-    servings: data.servings || 4,
+    servings: parseYield(data.yield || data.servings),
     times: {
-      prep: data.prepTime || data.prep || '0 min',
-      cook: data.cookTime || data.cook || '0 min',
-      total: data.totalTime || data.total || '0 min',
-      rest: data.restTime || data.rest
+      prep: parseISODuration(data.prepTime) || data.prep || '0 min',
+      cook: parseISODuration(data.cookTime) || data.cook || '0 min',
+      total: parseISODuration(data.totalTime) || data.total || '0 min',
+      rest: parseISODuration(data.restTime) || data.rest
     },
     tags: Array.isArray(data.tags) ? data.tags : [],
     author: data.author,
-    dateCreated: data.dateCreated || data.date,
+    dateCreated: data.dateCreated || data.dateAdded || data.date,
     dateModified: data.dateModified,
     image: data.image,
     imageAlt: data.imageAlt || data.alt,

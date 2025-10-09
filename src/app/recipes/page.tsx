@@ -1,19 +1,91 @@
+'use client';
+
+import { useState, useMemo } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { RecipeGrid } from '@/components/recipes/recipe-grid';
 import { RecipeFilters } from '@/components/recipes/recipe-filters';
 import { SearchBar } from '@/components/ui/search-bar';
-import { getAllRecipes } from '@/lib/markdown';
 import { ChefHat } from 'lucide-react';
+import { Recipe } from '@/types';
 
-export const metadata = {
-  title: 'All Recipes | Savor',
-  description:
-    'Browse our complete collection of delicious recipes from around the world. Find your next favorite dish.',
-};
+// This component needs to be client-side to handle filtering
+export default function RecipesPage() {
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    difficulties: [] as string[],
+    tags: [] as string[],
+    generations: [] as string[],
+    maxTime: 120
+  });
 
-export default async function RecipesPage() {
-  const recipes = await getAllRecipes();
+  // Load recipes on mount
+  useState(() => {
+    const loadRecipes = async () => {
+      try {
+        // Load all recipes (now includes family recipes via markdown parser)
+        const response = await fetch('/api/recipes');
+        const allRecipes = response.ok ? await response.json() : [];
+        setRecipes(allRecipes);
+      } catch (error) {
+        console.error('Error loading recipes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadRecipes();
+  });
+
+  // Filter recipes based on selected filters
+  const filteredRecipes = useMemo(() => {
+    return recipes.filter(recipe => {
+      // Difficulty filter
+      if (filters.difficulties.length > 0 && !filters.difficulties.includes(recipe.meta.difficulty)) {
+        return false;
+      }
+
+      // Tags filter
+      if (filters.tags.length > 0) {
+        const hasMatchingTag = filters.tags.some(tag => recipe.meta.tags.includes(tag));
+        if (!hasMatchingTag) return false;
+      }
+
+      // Generation filter
+      if (filters.generations.length > 0) {
+        const hasMatchingGeneration = filters.generations.some(gen => recipe.meta.tags.includes(gen));
+        if (!hasMatchingGeneration) return false;
+      }
+
+      // Time filter
+      if (filters.maxTime < 120) {
+        const totalMinutes = parseInt(recipe.meta.times.total.replace(/\D/g, '')) || 0;
+        if (totalMinutes > filters.maxTime) return false;
+      }
+
+      return true;
+    });
+  }, [recipes, filters]);
+
+  const handleFiltersChange = (newFilters: any) => {
+    setFilters(newFilters);
+  };
+
+  if (isLoading) {
+    return (
+      <div className='min-h-screen bg-background'>
+        <Header />
+        <main className='container py-12'>
+          <div className='text-center'>
+            <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-savor-saffron'></div>
+            <p className='text-muted-foreground'>Loading recipes...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen bg-background'>
@@ -29,11 +101,11 @@ export default async function RecipesPage() {
                 </div>
               </div>
 
-              <h1 className='mb-4 font-heading text-4xl font-bold text-savor-charcoal sm:text-5xl lg:text-6xl'>
+              <h1 className='mb-4 font-heading text-4xl font-bold text-savor-charcoal dark:text-savor-cream sm:text-5xl lg:text-6xl'>
                 All Recipes
               </h1>
 
-              <p className='mx-auto mb-8 max-w-2xl text-lg text-savor-charcoal/80 sm:text-xl'>
+              <p className='mx-auto mb-8 max-w-2xl text-lg text-savor-charcoal/80 dark:text-savor-cream/80 sm:text-xl'>
                 Explore our complete collection of {recipes.length} delicious recipes. From quick
                 weeknight dinners to special occasion treats.
               </p>
@@ -52,12 +124,12 @@ export default async function RecipesPage() {
             <div className='grid gap-8 lg:grid-cols-4'>
               {/* Filters Sidebar */}
               <div className='lg:col-span-1'>
-                <RecipeFilters recipes={recipes} />
+                <RecipeFilters recipes={recipes} onFiltersChange={handleFiltersChange} />
               </div>
 
               {/* Recipe Grid */}
               <div className='lg:col-span-3'>
-                <RecipeGrid recipes={recipes} />
+                <RecipeGrid recipes={filteredRecipes} />
               </div>
             </div>
           </div>

@@ -111,11 +111,11 @@ function SearchPageContent() {
                 </div>
               </div>
 
-              <h1 className='mb-4 font-heading text-3xl font-bold text-savor-charcoal sm:text-4xl'>
+              <h1 className='mb-4 font-heading text-3xl font-bold text-savor-charcoal dark:text-savor-cream sm:text-4xl'>
                 Search Recipes
               </h1>
 
-              <p className='mx-auto mb-8 max-w-2xl text-lg text-savor-charcoal/80'>
+              <p className='mx-auto mb-8 max-w-2xl text-lg text-savor-charcoal/80 dark:text-savor-cream/80'>
                 Find the perfect recipe for any occasion. Search by ingredients, cuisine, or dish
                 name.
               </p>

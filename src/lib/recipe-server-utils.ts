@@ -1,48 +1,42 @@
 import { Recipe } from '@/types';
 import { getAllRecipes, getRecipeBySlug } from '@/lib/markdown';
-import { getAllFamilyRecipes, getFamilyRecipeBySlug } from '@/lib/family-recipes';
 import { userRecipeToRecipe, getUserRecipes, getUserRecipeBySlug } from '@/lib/recipe-utils';
 
 /**
- * Get all recipes (markdown, family, and user recipes) - SERVER SIDE ONLY
+ * Get all recipes (markdown and user recipes) - SERVER SIDE ONLY
+ *
+ * Note: Family recipes are now loaded via the markdown parser from /recipes/family/
+ * The old family-recipes system has been deprecated and removed.
  */
 export async function getAllRecipesIncludingUser(): Promise<Recipe[]> {
   const markdownRecipes = await getAllRecipes();
-  const familyRecipes = await getAllFamilyRecipes();
   const userRecipes = getUserRecipes();
 
   const convertedUserRecipes = userRecipes.map(userRecipeToRecipe);
 
-  return [...markdownRecipes, ...familyRecipes, ...convertedUserRecipes];
+  return [...markdownRecipes, ...convertedUserRecipes];
 }
 
 /**
- * Get a recipe by slug (checks markdown, family, and user recipes) - SERVER SIDE ONLY
+ * Get a recipe by slug (checks markdown and user recipes) - SERVER SIDE ONLY
+ *
+ * Note: Family recipes are now loaded via the markdown parser.
+ * The old family-recipes system has been deprecated and removed.
  */
 export async function getRecipeBySlugIncludingUser(slug: string): Promise<Recipe | null> {
-  // First try to get from markdown
+  // First try to get from markdown (includes all family recipes)
   try {
     const markdownRecipe = await getRecipeBySlug(slug);
     if (markdownRecipe) {
       return markdownRecipe;
     }
   } catch (error) {
-    // Continue to check family recipes
-  }
-
-  // Then try family recipes
-  try {
-    const familyRecipe = await getFamilyRecipeBySlug(slug);
-    if (familyRecipe) {
-      return familyRecipe;
-    }
-  } catch (error) {
-    // Continue to check user recipes
+    console.error('Error fetching markdown recipe:', error);
   }
 
   // For server-side rendering, we can't access localStorage
   // User recipes will be handled client-side if needed
-  // This function primarily handles markdown and family recipes on the server
+  // This function primarily handles markdown recipes on the server
 
   return null;
 }

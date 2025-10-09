@@ -113,12 +113,12 @@ export default function CategoriesPage() {
                 </div>
               </div>
               
-              <h1 className="mb-4 font-heading text-4xl font-bold text-savor-charcoal sm:text-5xl lg:text-6xl">
+              <h1 className="mb-4 font-heading text-4xl font-bold text-savor-charcoal dark:text-savor-cream sm:text-5xl lg:text-6xl">
                 Recipe Categories
               </h1>
-              
-              <p className="mx-auto max-w-2xl text-lg text-savor-charcoal/80 sm:text-xl">
-                Explore our collection of recipes organized by cuisine, meal type, and cooking style. 
+
+              <p className="mx-auto max-w-2xl text-lg text-savor-charcoal/80 dark:text-savor-cream/80 sm:text-xl">
+                Explore our collection of recipes organized by cuisine, meal type, and cooking style.
                 Find exactly what you're craving.
               </p>
             </div>
@@ -161,7 +161,7 @@ export default function CategoriesPage() {
                       {/* Category content */}
                       <div className="p-6">
                         <div className="mb-4">
-                          <h3 className="mb-2 font-semibold text-savor-charcoal">Featured Recipes:</h3>
+                          <h3 className="mb-2 font-semibold text-foreground">Featured Recipes:</h3>
                           <ul className="space-y-1 text-sm text-muted-foreground">
                             {category.featured.map((recipe, index) => (
                               <li key={index} className="flex items-center">

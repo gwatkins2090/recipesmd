@@ -18,6 +18,7 @@ interface RecipeFiltersProps {
 export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) {
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedGenerations, setSelectedGenerations] = useState<string[]>([]);
   const [maxTime, setMaxTime] = useState<number[]>([120]); // Default to 2 hours
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -28,11 +29,12 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
     const newDifficulties = checked
       ? [...selectedDifficulties, difficulty]
       : selectedDifficulties.filter(d => d !== difficulty);
-    
+
     setSelectedDifficulties(newDifficulties);
     onFiltersChange?.({
       difficulties: newDifficulties,
       tags: selectedTags,
+      generations: selectedGenerations,
       maxTime: maxTime[0]
     });
   };
@@ -41,11 +43,26 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
     const newTags = checked
       ? [...selectedTags, tag]
       : selectedTags.filter(t => t !== tag);
-    
+
     setSelectedTags(newTags);
     onFiltersChange?.({
       difficulties: selectedDifficulties,
       tags: newTags,
+      generations: selectedGenerations,
+      maxTime: maxTime[0]
+    });
+  };
+
+  const handleGenerationChange = (generation: string, checked: boolean) => {
+    const newGenerations = checked
+      ? [...selectedGenerations, generation]
+      : selectedGenerations.filter(g => g !== generation);
+
+    setSelectedGenerations(newGenerations);
+    onFiltersChange?.({
+      difficulties: selectedDifficulties,
+      tags: selectedTags,
+      generations: newGenerations,
       maxTime: maxTime[0]
     });
   };
@@ -55,6 +72,7 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
     onFiltersChange?.({
       difficulties: selectedDifficulties,
       tags: selectedTags,
+      generations: selectedGenerations,
       maxTime: value[0]
     });
   };
@@ -62,15 +80,17 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
   const clearAllFilters = () => {
     setSelectedDifficulties([]);
     setSelectedTags([]);
+    setSelectedGenerations([]);
     setMaxTime([120]);
     onFiltersChange?.({
       difficulties: [],
       tags: [],
+      generations: [],
       maxTime: 120
     });
   };
 
-  const hasActiveFilters = selectedDifficulties.length > 0 || selectedTags.length > 0 || maxTime[0] < 120;
+  const hasActiveFilters = selectedDifficulties.length > 0 || selectedTags.length > 0 || selectedGenerations.length > 0 || maxTime[0] < 120;
 
   const formatTime = (minutes: number) => {
     if (minutes < 60) return `${minutes} min`;
@@ -92,7 +112,7 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
           Filters
           {hasActiveFilters && (
             <Badge variant="secondary" className="ml-2">
-              {selectedDifficulties.length + selectedTags.length + (maxTime[0] < 120 ? 1 : 0)}
+              {selectedDifficulties.length + selectedTags.length + selectedGenerations.length + (maxTime[0] < 120 ? 1 : 0)}
             </Badge>
           )}
         </Button>
@@ -118,6 +138,19 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
             </CardHeader>
             <CardContent className="pt-0">
               <div className="flex flex-wrap gap-2">
+                {selectedGenerations.map((generation) => (
+                  <Badge key={generation} variant="secondary" className="text-xs">
+                    {generation}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="ml-1 h-auto p-0"
+                      onClick={() => handleGenerationChange(generation, false)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                ))}
                 {selectedDifficulties.map((difficulty) => (
                   <Badge key={difficulty} variant="secondary" className="text-xs">
                     {difficulty}
@@ -162,27 +195,62 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
           </Card>
         )}
 
-        {/* Difficulty filter */}
+        {/* Tags filter - Show ALL tags */}
+        {filterOptions.tags.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Tags</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {filterOptions.tags.map((tag) => (
+                  <div key={tag} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`tag-${tag}`}
+                      checked={selectedTags.includes(tag)}
+                      onCheckedChange={(checked) =>
+                        handleTagChange(tag, checked as boolean)
+                      }
+                    />
+                    <label
+                      htmlFor={`tag-${tag}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 capitalize cursor-pointer"
+                    >
+                      {tag.replace(/-/g, ' ')}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Generation filter */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Difficulty</CardTitle>
+            <CardTitle className="text-sm">Generation</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {filterOptions.difficulties.map((difficulty) => (
-                <div key={difficulty} className="flex items-center space-x-2">
+              {[
+                { value: 'great-grandma', label: "Great Grandma's Recipes" },
+                { value: 'grandma', label: "Grandma's Recipes" },
+                { value: 'mom', label: "Mom's Recipes" },
+                { value: 'modern', label: 'Modern Family Additions' }
+              ].map((generation) => (
+                <div key={generation.value} className="flex items-center space-x-2">
                   <Checkbox
-                    id={`difficulty-${difficulty}`}
-                    checked={selectedDifficulties.includes(difficulty)}
-                    onCheckedChange={(checked) => 
-                      handleDifficultyChange(difficulty, checked as boolean)
+                    id={`generation-${generation.value}`}
+                    checked={selectedGenerations.includes(generation.value)}
+                    onCheckedChange={(checked) =>
+                      handleGenerationChange(generation.value, checked as boolean)
                     }
                   />
                   <label
-                    htmlFor={`difficulty-${difficulty}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    htmlFor={`generation-${generation.value}`}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                   >
-                    {difficulty}
+                    {generation.label}
                   </label>
                 </div>
               ))}
@@ -193,7 +261,7 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
         {/* Time filter */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Max Cook Time</CardTitle>
+            <CardTitle className="text-sm">Cooking Time</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -216,35 +284,33 @@ export function RecipeFilters({ recipes, onFiltersChange }: RecipeFiltersProps) 
           </CardContent>
         </Card>
 
-        {/* Tags filter */}
-        {filterOptions.tags.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Tags</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3 max-h-48 overflow-y-auto">
-                {filterOptions.tags.slice(0, 10).map((tag) => (
-                  <div key={tag} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`tag-${tag}`}
-                      checked={selectedTags.includes(tag)}
-                      onCheckedChange={(checked) => 
-                        handleTagChange(tag, checked as boolean)
-                      }
-                    />
-                    <label
-                      htmlFor={`tag-${tag}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 capitalize"
-                    >
-                      {tag.replace('-', ' ')}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Difficulty filter */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">Difficulty</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {filterOptions.difficulties.map((difficulty) => (
+                <div key={difficulty} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`difficulty-${difficulty}`}
+                    checked={selectedDifficulties.includes(difficulty)}
+                    onCheckedChange={(checked) =>
+                      handleDifficultyChange(difficulty, checked as boolean)
+                    }
+                  />
+                  <label
+                    htmlFor={`difficulty-${difficulty}`}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                  >
+                    {difficulty}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

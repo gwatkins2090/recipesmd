@@ -40,12 +40,6 @@ const Header = () => {
             Categories
           </Link>
           <Link
-            href='/family-recipes'
-            className='text-sm font-medium transition-colors hover:text-savor-saffron'
-          >
-            Family Recipes
-          </Link>
-          <Link
             href='/cookbook'
             className='text-sm font-medium transition-colors hover:text-savor-saffron'
           >
@@ -72,10 +66,12 @@ const Header = () => {
         </nav>
 
         <div className='flex items-center space-x-4'>
-          <Button variant='ghost' size='sm' className='hidden md:flex'>
-            <Heart className='mr-2 h-4 w-4' />
-            Favorites
-          </Button>
+          <Link href='/favorites'>
+            <Button variant='ghost' size='sm' className='hidden md:flex'>
+              <Heart className='mr-2 h-4 w-4' />
+              Favorites
+            </Button>
+          </Link>
           <ThemeToggle />
           <Button
             variant='ghost'
@@ -104,13 +100,6 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Categories
-            </Link>
-            <Link
-              href='/family-recipes'
-              className='block text-sm font-medium transition-colors hover:text-savor-saffron'
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Family Recipes
             </Link>
             <Link
               href='/cookbook'

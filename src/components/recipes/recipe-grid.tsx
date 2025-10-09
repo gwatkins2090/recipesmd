@@ -78,7 +78,7 @@ export function RecipeGrid({ recipes, showFilters = true }: RecipeGridProps) {
     return (
       <div className="text-center py-12">
         <div className="mb-4 text-6xl">🍽️</div>
-        <h3 className="mb-2 text-xl font-semibold text-savor-charcoal">No recipes found</h3>
+        <h3 className="mb-2 text-xl font-semibold text-foreground">No recipes found</h3>
         <p className="text-muted-foreground">
           We're working on adding more delicious recipes to this category. Check back soon!
         </p>
@@ -92,16 +92,16 @@ export function RecipeGrid({ recipes, showFilters = true }: RecipeGridProps) {
       {showFilters && (
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-savor-charcoal">
+            <h2 className="text-xl font-semibold text-foreground">
               {recipes.length} Recipe{recipes.length !== 1 ? 's' : ''}
             </h2>
             <p className="text-sm text-muted-foreground">
               Discover delicious recipes perfect for any occasion
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-4">
-            <label htmlFor="sort" className="text-sm font-medium text-savor-charcoal">
+            <label htmlFor="sort" className="text-sm font-medium text-foreground">
               Sort by:
             </label>
             <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>

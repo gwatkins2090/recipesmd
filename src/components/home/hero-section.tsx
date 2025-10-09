@@ -17,14 +17,14 @@ export function HeroSection() {
             </div>
           </div>
 
-          <h1 className='mb-6 font-heading text-4xl font-bold tracking-tight text-savor-charcoal sm:text-5xl lg:text-6xl'>
+          <h1 className='mb-6 font-heading text-4xl font-bold tracking-tight text-savor-charcoal dark:text-savor-cream sm:text-5xl lg:text-6xl'>
             Every Recipe Tells a{' '}
             <span className='bg-gradient-to-r from-savor-saffron to-savor-paprika bg-clip-text text-transparent'>
               Story
             </span>
           </h1>
 
-          <p className='mb-8 text-lg text-savor-charcoal/80 sm:text-xl lg:text-2xl'>
+          <p className='mb-8 text-lg text-savor-charcoal/80 dark:text-savor-cream/80 sm:text-xl lg:text-2xl'>
             Discover, save, and share recipes that bring families together. From traditional
             comfort foods to modern culinary adventures.
           </p>
@@ -63,8 +63,8 @@ export function HeroSection() {
                   <ChefHat className='h-6 w-6 text-savor-saffron' />
                 </div>
               </div>
-              <div className='text-2xl font-bold text-savor-charcoal'>500+</div>
-              <div className='text-sm text-savor-charcoal/70'>Recipes</div>
+              <div className='text-2xl font-bold text-foreground'>500+</div>
+              <div className='text-sm text-muted-foreground'>Recipes</div>
             </div>
 
             <div className='text-center'>
@@ -73,8 +73,8 @@ export function HeroSection() {
                   <Users className='h-6 w-6 text-savor-sage' />
                 </div>
               </div>
-              <div className='text-2xl font-bold text-savor-charcoal'>10K+</div>
-              <div className='text-sm text-savor-charcoal/70'>Home Cooks</div>
+              <div className='text-2xl font-bold text-foreground'>10K+</div>
+              <div className='text-sm text-muted-foreground'>Home Cooks</div>
             </div>
 
             <div className='text-center'>
@@ -83,8 +83,8 @@ export function HeroSection() {
                   <Heart className='h-6 w-6 text-savor-paprika' />
                 </div>
               </div>
-              <div className='text-2xl font-bold text-savor-charcoal'>50K+</div>
-              <div className='text-sm text-savor-charcoal/70'>Favorites</div>
+              <div className='text-2xl font-bold text-foreground'>50K+</div>
+              <div className='text-sm text-muted-foreground'>Favorites</div>
             </div>
 
             <div className='text-center'>
@@ -93,8 +93,8 @@ export function HeroSection() {
                   <Star className='h-6 w-6 text-savor-sage' />
                 </div>
               </div>
-              <div className='text-2xl font-bold text-savor-charcoal'>4.9</div>
-              <div className='text-sm text-savor-charcoal/70'>Avg Rating</div>
+              <div className='text-2xl font-bold text-foreground'>4.9</div>
+              <div className='text-sm text-muted-foreground'>Avg Rating</div>
             </div>
           </div>
         </div>
