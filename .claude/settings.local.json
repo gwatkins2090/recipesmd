@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test -d .git)",
+      "Bash(test -d \"C:\\Users\\gwatkins\\dev\\apps\\recipesmd\\docs\")",
+      "Bash(gh auth:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh label create:*)",
+      "Bash(gh label:*)",
+      "Bash(gh issue list:*)",
+      "Bash(python3:*)",
+      "Bash(gh issue create:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

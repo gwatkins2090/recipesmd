@@ -1,0 +1,39 @@
+# Chicken & Dressing Casserole
+
+## Source Attribution
+
+Jan G
+
+## Ingredients
+
+- 3 Cups Chicken, cut-up
+- 1 Can Cream/Chicken Soup
+- 1 Can Cream/Mushroom Soup
+- 1 Can Cream/Celery Soup
+- 1½ Cups Chicken Broth
+- 1 sm Can Pet Milk (5 oz)
+- 1 Med Onion, chopped
+- 1 Stick Oleo
+- 1 tsp Sage
+- 1 9" pan Corn Bread
+
+## Instructions
+
+1. Saute Onion in Butter 10 mins. Mix Soups, Milk & Sage.
+
+2. Combine cornbread with broth, then add soup mixture.
+
+3. Bake in 13x9.2 Pan at 350° for 30 mins.
+
+---
+
+## Archival Metadata
+
+- **Source File:** Mom_s RecipesPart-50.pdf
+- **Transcription Date:** 2025-10-17
+- **Format Type:** Typed with handwritten note
+- **Recipe Category:** Main Dish - Chicken
+
+## Notes
+
+Handwritten note: "This is delicious two in mix - I put Casserole & all 2 go - Freezes well It liked it."

@@ -1,0 +1,38 @@
+{
+  "workflow_version": "1.2.0",
+  "timestamps": {
+    "started": "2025-10-21T00:00:00Z",
+    "last_updated": "2025-10-21T00:00:00Z",
+    "completed": "2025-10-21T00:00:00Z"
+  },
+  "mode": "initial_scan",
+  "scan_level": "deep",
+  "project_root": "C:\\Users\\gwatkins\\dev\\apps\\recipesmd",
+  "output_folder": "C:\\Users\\gwatkins\\dev\\apps\\recipesmd\\docs",
+  "completed_steps": [
+    {"step": "step_1", "status": "completed", "timestamp": "2025-10-21T00:00:00Z", "summary": "Classified as monolith with 1 part (Next.js web app)"},
+    {"step": "step_2-10", "status": "completed", "timestamp": "2025-10-21T00:00:00Z", "summary": "Generated project-overview.md and index.md"}
+  ],
+  "current_step": "completed",
+  "findings": {
+    "project_classification": {
+      "repository_type": "monolith",
+      "parts_count": 1,
+      "project_type": "web",
+      "primary_tech": "Next.js 15 + React 19 + TypeScript"
+    }
+  },
+  "project_types": [
+    {
+      "part_id": "main",
+      "project_type_id": "web",
+      "display_name": "Next.js Web Application"
+    }
+  ],
+  "outputs_generated": [
+    "project-scan-report.json",
+    "project-overview.md",
+    "index.md"
+  ],
+  "resume_instructions": "Documentation workflow complete"
+}
