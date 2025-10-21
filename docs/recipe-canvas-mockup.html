@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savor - Recipe Canvas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            overflow: hidden;
+            background-color: #f5f7fa;
+        }
+
+        /* Color Variables - Savor Branding */
+        :root {
+            --primary-teal: #3d5a6b;
+            --dark-teal: #2c4a5a;
+            --accent-orange: #e89a6c;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #6c7a89;
+            --border-color: #e1e8ed;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Header Styles */
+        .header {
+            height: 70px;
+            background-color: var(--dark-teal);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chef-icon {
+            width: 45px;
+            height: 45px;
+            background-color: var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .header-tagline {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .header-nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        .header-nav a:hover {
+            color: var(--accent-orange);
+        }
+
+        .favorites-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .favorites-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background-color: white;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: rgba(232, 154, 108, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .sidebar-nav a.active {
+            background-color: rgba(232, 154, 108, 0.15);
+            color: var(--accent-orange);
+            font-weight: 500;
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, #d88a5c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(232, 154, 108, 0.3);
+        }
+
+        /* Canvas Area Styles */
+        .canvas-container {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 50;
+        }
+
+        .canvas-title {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .canvas-btn {
+            padding: 8px 16px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .canvas-btn:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .canvas-btn.primary {
+            background-color: var(--accent-orange);
+            color: white;
+            border-color: var(--accent-orange);
+        }
+
+        .canvas-btn.primary:hover {
+            background-color: #d88a5c;
+        }
+
+        .canvas {
+            width: 100%;
+            height: 100%;
+            padding-top: 60px;
+            position: relative;
+            cursor: grab;
+            background-image: 
+                radial-gradient(circle, rgba(61, 90, 107, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .canvas:active {
+            cursor: grabbing;
+        }
+
+        /* Recipe Card Styles */
+        .recipe-card {
+            position: absolute;
+            width: 320px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            cursor: move;
+            transition: box-shadow 0.3s, transform 0.1s;
+        }
+
+        .recipe-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .recipe-card.dragging {
+            opacity: 0.9;
+            z-index: 1000;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+        }
+
+        .recipe-favorite {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .recipe-favorite:hover {
+            transform: scale(1.1);
+        }
+
+        .recipe-content {
+            padding: 20px;
+        }
+
+        .recipe-card h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .recipe-tag {
+            padding: 6px 12px;
+            background-color: rgba(61, 90, 107, 0.1);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--primary-teal);
+            font-weight: 500;
+        }
+
+        .recipe-tag.featured {
+            background-color: rgba(232, 154, 108, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .recipe-notes {
+            margin-top: 12px;
+            padding: 12px;
+            background-color: #fffbf5;
+            border-left: 3px solid var(--accent-orange);
+            font-size: 14px;
+            color: var(--text-light);
+            font-style: italic;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 16px;
+            pointer-events: none;
+            max-width: 500px;
+        }
+
+        .welcome-message .icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            opacity: 0.4;
+        }
+
+        .welcome-message h3 {
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .welcome-message p {
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-header,
+            .nav-section-title,
+            .sidebar-footer {
+                display: none;
+            }
+
+            .sidebar-nav a span {
+                display: none;
+            }
+
+            .sidebar-nav a {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="chef-icon">👨‍🍳</div>
+                <div>
+                    <h1>Savor</h1>
+                    <div class="header-tagline">Every recipe tells a story</div>
+                </div>
+            </div>
+            <div class="header-nav">
+                <a href="#">Recipes</a>
+                <a href="#">Categories</a>
+                <a href="#">Family Recipes</a>
+                <a href="#">Cookbook</a>
+                <a href="#">Shopping List</a>
+                <a href="#">About</a>
+                <div class="favorites-btn">
+                    <span>♡</span>
+                    <span>Favorites</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>My Canvas</h2>
+                    <p>Family Favorites 2025</p>
+                </div>
+
+                <div class="sidebar-nav">
+                    <div class="nav-section">
+                        <div class="nav-section-title">Browse</div>
+                        <a href="#" class="active">
+                            <span class="nav-icon">📖</span>
+                            <span>All Recipes</span>
+                        </a>
+                        <a href="#">
+                            <span class="nav-icon">🏷️</span>
+                            <span>Categories</span>
+                        </a>
+                        <a href="#">
+                            <span class="nav-icon">⭐</span>
+                            <span>Favorites</span>
+                        </a>
+                        <a href="#">
+                            <span class="nav-icon">🍽️</span>
+                            <span>Meal Type</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-section">
+                        <div class="nav-section-title">Collections</div>
+                        <a href="#">
+                            <span class="nav-icon">🎄</span>
+                            <span>Holiday Recipes</span>
+                        </a>
+                        <a href="#">
+                            <span class="nav-icon">⚡</span>
+                            <span>Quick Meals</span>
+                        </a>
+                        <a href="#">
+                            <span class="nav-icon">👨‍👩‍👧‍👦</span>
+                            <span>Family Classics</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <button class="upload-btn">
+                        <span>➕</span>
+                        <span>Upload Recipe</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="canvas-container">
+                <div class="canvas-header">
+                    <div class="canvas-title">📍 Family Favorites 2025</div>
+                    <div class="canvas-controls">
+                        <button class="canvas-btn" onclick="clearCanvas()">Clear Canvas</button>
+                        <button class="canvas-btn primary" onclick="addSampleRecipes()">Add Sample Recipes</button>
+                    </div>
+                </div>
+
+                <div class="canvas" id="canvas">
+                    <!-- Welcome Message -->
+                    <div class="welcome-message">
+                        <div class="icon">🍳</div>
+                        <h3>Your Recipe Canvas Awaits</h3>
+                        <p>Drag and organize your recipes in a space that makes sense to you.</p>
+                        <p>Create meal plans, group family favorites, or arrange by season.</p>
+                    </div>
+
+                    <!-- Recipe cards will be added via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas drag and drop functionality
+        const canvas = document.getElementById('canvas');
+        let isDragging = false;
+        let currentCard = null;
+        let offsetX, offsetY;
+
+        // Sample recipe data
+        const sampleRecipes = [
+            {
+                title: "Grandma's Apple Pie",
+                emoji: "🥧",
+                tags: ["Dessert", "Family Favorite"],
+                tagType: "featured",
+                notes: "Use Granny Smith apples - Mom's secret ingredient!"
+            },
+            {
+                title: "Weeknight Pasta Primavera",
+                emoji: "🍝",
+                tags: ["Quick", "Italian"],
+                tagType: "normal",
+                notes: "Ready in 20 minutes - perfect for busy nights"
+            },
+            {
+                title: "Sunday Roast Chicken",
+                emoji: "🍗",
+                tags: ["Main Course", "Comfort Food"],
+                tagType: "featured",
+                notes: "The recipe that brings everyone together"
+            },
+            {
+                title: "Chocolate Chip Cookies",
+                emoji: "🍪",
+                tags: ["Dessert", "Baking"],
+                tagType: "normal",
+                notes: "Sarah's favorite - always make a double batch!"
+            },
+            {
+                title: "Thai Green Curry",
+                emoji: "🍛",
+                tags: ["Thai", "Spicy"],
+                tagType: "normal",
+                notes: "Adjust heat for kids, add extra coconut milk"
+            },
+            {
+                title: "Blueberry Pancakes",
+                emoji: "🥞",
+                tags: ["Breakfast", "Weekend"],
+                tagType: "featured",
+                notes: "Saturday morning tradition since 2010"
+            }
+        ];
+
+        function createRecipeCard(recipe, x, y) {
+            const card = document.createElement('div');
+            card.className = 'recipe-card';
+            card.style.left = x + 'px';
+            card.style.top = y + 'px';
+            
+            card.innerHTML = `
+                <div class="recipe-image">${recipe.emoji}
+                    <div class="recipe-favorite">♡</div>
+                </div>
+                <div class="recipe-content">
+                    <h3>${recipe.title}</h3>
+                    <div class="recipe-meta">
+                        ${recipe.tags.map(tag => `<span class="recipe-tag ${recipe.tagType}">${tag}</span>`).join('')}
+                    </div>
+                    <div class="recipe-notes">${recipe.notes}</div>
+                </div>
+            `;
+
+            card.addEventListener('mousedown', startDrag);
+            
+            // Favorite button interaction
+            const favoriteBtn = card.querySelector('.recipe-favorite');
+            favoriteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                favoriteBtn.textContent = favoriteBtn.textContent === '♡' ? '❤️' : '♡';
+            });
+
+            canvas.appendChild(card);
+        }
+
+        function startDrag(e) {
+            if (e.target.closest('.recipe-card') && !e.target.closest('.recipe-favorite')) {
+                currentCard = e.target.closest('.recipe-card');
+                isDragging = true;
+                currentCard.classList.add('dragging');
+                
+                const rect = currentCard.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                
+                e.preventDefault();
+            }
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && currentCard) {
+                const canvasRect = canvas.getBoundingClientRect();
+                let newX = e.clientX - canvasRect.left - offsetX;
+                let newY = e.clientY - canvasRect.top - offsetY - 60; // Account for canvas header
+                
+                // Boundary checking
+                newX = Math.max(20, Math.min(newX, canvas.offsetWidth - currentCard.offsetWidth - 20));
+                newY = Math.max(20, Math.min(newY, canvas.offsetHeight - currentCard.offsetHeight - 80));
+                
+                currentCard.style.left = newX + 'px';
+                currentCard.style.top = newY + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (currentCard) {
+                currentCard.classList.remove('dragging');
+            }
+            isDragging = false;
+            currentCard = null;
+        });
+
+        function addSampleRecipes() {
+            // Clear existing cards first
+            const existingCards = canvas.querySelectorAll('.recipe-card');
+            existingCards.forEach(card => card.remove());
+
+            // Add sample recipes in a scattered pattern
+            const positions = [
+                { x: 100, y: 120 },
+                { x: 460, y: 140 },
+                { x: 820, y: 160 },
+                { x: 240, y: 420 },
+                { x: 600, y: 440 },
+                { x: 960, y: 400 }
+            ];
+
+            sampleRecipes.forEach((recipe, index) => {
+                if (positions[index]) {
+                    createRecipeCard(recipe, positions[index].x, positions[index].y);
+                }
+            });
+
+            // Hide welcome message
+            const welcomeMsg = document.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.style.display = 'none';
+            }
+        }
+
+        function clearCanvas() {
+            const cards = canvas.querySelectorAll('.recipe-card');
+            cards.forEach(card => card.remove());
+            
+            const welcomeMsg = document.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.style.display = 'block';
+            }
+        }
+
+        // Prevent text selection while dragging
+        canvas.addEventListener('selectstart', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
